@@ -23,8 +23,12 @@ static void led_flow_thread(void *parameter)
     rt_pin_write(LED7_PIN, PIN_HIGH);
     rt_pin_write(LED8_PIN, PIN_HIGH);
 
-      while (1)
-      { /* 依次点亮LED */
+    
+    rt_thread_mdelay(5000);
+    
+    
+    while (1)
+    { /* 依次点亮LED */
         rt_pin_write(LED1_PIN, PIN_LOW);
         rt_thread_mdelay(100);
         rt_pin_write(LED2_PIN, PIN_LOW);
@@ -40,7 +44,7 @@ static void led_flow_thread(void *parameter)
         rt_pin_write(LED7_PIN, PIN_LOW);
         rt_thread_mdelay(100);
         rt_pin_write(LED8_PIN, PIN_LOW);
-        
+
         rt_thread_mdelay(1000); /* 1s后全部熄灭 */
         rt_pin_write(LED1_PIN, PIN_HIGH);
         rt_pin_write(LED2_PIN, PIN_HIGH);
@@ -50,9 +54,9 @@ static void led_flow_thread(void *parameter)
         rt_pin_write(LED6_PIN, PIN_HIGH);
         rt_pin_write(LED7_PIN, PIN_HIGH);
         rt_pin_write(LED8_PIN, PIN_HIGH);
-        
+
         rt_thread_mdelay(1000);
-      }
+    }
 }
 
 int led_flow_start(void)
@@ -82,6 +86,9 @@ static void led_fast_flash_thread(void *parameter)
     rt_pin_mode(LED9_PIN, PIN_MODE_OUTPUT);
     rt_pin_write(LED9_PIN, PIN_HIGH);
 
+    
+    rt_thread_mdelay(5000);
+    
     while (1)
     {
       rt_pin_write(LED9_PIN, PIN_LOW);
@@ -118,6 +125,10 @@ static void led_slow_flash_thread(void *parameter)
     rt_pin_mode(LED10_PIN, PIN_MODE_OUTPUT);
     rt_pin_write(LED10_PIN, PIN_HIGH);
 
+    
+    
+    rt_thread_mdelay(5000);
+    
     while (1)
     {
       rt_pin_write(LED10_PIN, PIN_LOW);

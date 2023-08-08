@@ -390,19 +390,19 @@
               <FilePath>applications\main.c</FilePath>
             </File>
             <File>
-              <FileName>led.c</FileName>
+              <FileName>pid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\2023-wheel-leg-robot\applications\led.c</FilePath>
+              <FilePath>.\applications\controltask\pid.c</FilePath>
             </File>
             <File>
               <FileName>motion.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\2023-wheel-leg-robot\applications\controltask\motion.c</FilePath>
+              <FilePath>.\applications\controltask\motion.c</FilePath>
             </File>
             <File>
-              <FileName>pid.c</FileName>
+              <FileName>led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\applications\controltask\pid.c</FilePath>
+              <FilePath>.\applications\led.c</FilePath>
             </File>
           </Files>
         </Group>
