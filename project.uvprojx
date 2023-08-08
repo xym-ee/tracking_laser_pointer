@@ -54,7 +54,7 @@
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>0</BrowseInformation>
+          <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\build\keil\List\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -400,19 +400,34 @@
               <FilePath>..\2023-wheel-leg-robot\applications\status.c</FilePath>
             </File>
             <File>
+              <FileName>motion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\2023-wheel-leg-robot\applications\controltask\motion.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\controltask\pid.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>IOcontrol</GroupName>
+          <Files>
+            <File>
               <FileName>sbus.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\2023-wheel-leg-robot\applications\iotask\sbus.c</FilePath>
+              <FilePath>.\applications\iotask\sbus.c</FilePath>
+            </File>
+            <File>
+              <FileName>openmv.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\iotask\openmv.c</FilePath>
             </File>
             <File>
               <FileName>motor_can.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\2023-wheel-leg-robot\applications\iotask\motor_can.c</FilePath>
-            </File>
-            <File>
-              <FileName>motion.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\2023-wheel-leg-robot\applications\controltask\motion.c</FilePath>
+              <FilePath>.\applications\iotask\motor_can.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -810,5 +825,14 @@
     <components/>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>project</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

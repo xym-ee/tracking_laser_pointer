@@ -5,9 +5,8 @@
 
 motor_t motor = 
 {
-	.left.control.mode  = MODE_TORQUE,
-	.right.control.mode = MODE_TORQUE,
-	
+	.yaw.control.mode = MODE_SPEED,
+	.pit.control.mode = MODE_SPEED,
 };
 
 /*-------------------------- CAN接收线程 *--------------------------*/
@@ -43,20 +42,17 @@ static void can_rx_thread_entry(void *parameter)
         /* 从 CAN 读取一帧数据 */
         rt_device_read(can_dev, 0, &rxmsg, sizeof(rxmsg));
         
-        /* 左侧电机 */
+        /* 俯仰电机 */
         if (rxmsg.id == 0x142)
         {
-			motor.left.sensor.speed = (rt_int16_t)((rxmsg.data[5]<<8) | rxmsg.data[4]);
-//			rt_kprintf("%d\n", (rt_int32_t)((rxmsg.data[5]<<8)|rxmsg.data[4]));
-//            rt_kprintf("%02x %02x %02x %02x %02x %02x %02x %02x\n",
-//            rxmsg.data[0], rxmsg.data[1],rxmsg.data[2],rxmsg.data[3],
-//            rxmsg.data[4],rxmsg.data[5],rxmsg.data[6],rxmsg.data[7]);
+			//motor.pit.sensor.speed = (rt_int16_t)((rxmsg.data[5]<<8) | rxmsg.data[4]);
+
         }
         
-        /* 右侧电机 */
+        /* 偏转电机 */
         if (rxmsg.id == 0x141)
         {
-			motor.right.sensor.speed = (rt_int16_t)((rxmsg.data[5]<<8) | rxmsg.data[4]);
+			//motor.yaw.sensor.speed = (rt_int16_t)((rxmsg.data[5]<<8) | rxmsg.data[4]);
         }
     }
 }
@@ -71,7 +67,7 @@ static void can_tx_thread_entry(void *parameter)
     struct rt_can_msg msg = {0};
     rt_size_t   size;               /* 接收发送状态 */
     
-	rt_int16_t iqControl;
+	rt_int32_t speedControl;
 
     /* 速度帧设置 */
     msg.ide = RT_CAN_STDID;         /* 标准格式 */
@@ -79,23 +75,25 @@ static void can_tx_thread_entry(void *parameter)
     msg.len = 8;                    /* 数据长度为 8 */
 	
 	/* 转矩控制的固定数据位 msg.data[4][5] 转矩位 */
-	msg.data[0] = 0xA1;             /* 操作码 */
+	msg.data[0] = 0xA2;             /* 操作码 */
 	 
 	msg.data[1] = 0x00;
 	msg.data[2] = 0x00; 
 	msg.data[3] = 0x00;
 
-	msg.data[6] = 0x00;
-	msg.data[7] = 0x00;	   
+    rt_thread_mdelay(4000);
+    
 		
     while(1)
     {
-		iqControl = motor.left.control.torque;
+		speedControl = motor.pit.control.speed;
 //		rt_kprintf("%d\n", iqControl);
 		
 		msg.id   = 0x142;	
-		msg.data[4] = *(rt_uint8_t *)(&iqControl);
-		msg.data[5] = *((rt_uint8_t *)(&iqControl)+1);
+		msg.data[4] = *(rt_uint8_t *)(&speedControl);
+		msg.data[5] = *((rt_uint8_t *)(&speedControl)+1);
+        msg.data[6] = *((rt_uint8_t *)(&speedControl)+2);
+        msg.data[7] = *((rt_uint8_t *)(&speedControl)+3);
 		
 		size = rt_device_write(can_dev, 0, &msg, sizeof(msg));
 //		if (size == 0)
@@ -103,15 +101,17 @@ static void can_tx_thread_entry(void *parameter)
 //			rt_kprintf("can dev write data failed in left!\n");
 //		}
 		
-		rt_thread_mdelay(4);
+		rt_thread_mdelay(5);
 		
 		
-		iqControl = motor.right.control.torque;
+		speedControl = motor.yaw.control.speed;
 //		rt_kprintf("%d\n", iqControl);
 		
 		msg.id      = 0x141;
-		msg.data[4] = *(rt_uint8_t *)(&iqControl);
-		msg.data[5] = *((rt_uint8_t *)(&iqControl)+1);
+		msg.data[4] = *(rt_uint8_t *)(&speedControl);
+		msg.data[5] = *((rt_uint8_t *)(&speedControl)+1);
+        msg.data[6] = *((rt_uint8_t *)(&speedControl)+2);
+        msg.data[7] = *((rt_uint8_t *)(&speedControl)+3);
 		
 		size = rt_device_write(can_dev, 0, &msg, sizeof(msg));
 //		if (size == 0)
@@ -119,7 +119,7 @@ static void can_tx_thread_entry(void *parameter)
 //			rt_kprintf("can dev write data failed in right!\n");
 //		}
 		
-        rt_thread_mdelay(4);
+        rt_thread_mdelay(5);
     }
 }
 

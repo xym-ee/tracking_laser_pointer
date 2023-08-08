@@ -1,6 +1,9 @@
-#include "iotask/imu.h"
+#include "iotask/openmv.h"
 
-imu_t imu;
+pix_t pix = {
+    .u = 90,
+    .v = 90,
+};
 
 /*--------------------------  控制块  ---------------------------*/
 
@@ -20,7 +23,7 @@ static struct rt_messagequeue rx_mq;
 
 
 /*--------------------------  DMA中断回调  ---------------------------*/
-//200hz回传  5ms
+//图像频率大概50Hz s
 struct rt_ringbuffer * rb = RT_NULL;
 
 /* 接收数据回调函数 */
@@ -42,7 +45,7 @@ static rt_err_t imu_uart_input(rt_device_t dev, rt_size_t size)
 
 /*--------------------------  数据处理线程  ---------------------------*/
 
-static void imu_thread_entry(void *parameter)
+static void openmv_thread_entry(void *parameter)
 {
     struct rx_msg msg;
     rt_err_t result;
@@ -65,18 +68,18 @@ static void imu_thread_entry(void *parameter)
         {
             /* 从串口读取数据*/
             rx_length = rt_device_read(msg.dev, 0, &rx_buffer[data_count], msg.size);
+
 			data_count = data_count + rx_length;
                         
             /* 可以使用状态机解包 */
-            if (byte[0] == 0x55 && byte[1]==0x53)
+            if (byte[0] == 0x55 && byte[1]==0x55 && byte[4]==0xAA)
             {
                 /* 满足帧头才判断帧长 */
-                if (data_count >= 11) 
+                if (data_count >= 5) 
                 {
-					imu.roll  = ((rt_int16_t)(byte[3]<<8 | byte[2]))*1800/32768;
-					imu.pitch = ((rt_int16_t)(byte[5]<<8 | byte[4]))*1800/32768;		/* 1.5 deg = 15 舍去低位 */
-					imu.yaw   = ((rt_int16_t)(byte[7]<<8 | byte[6]))*1800/32768;
-					
+                    pix.u = byte[2];
+                    pix.v = byte[3];
+                    					
                     /* 准备下一数据帧接收 */
                     data_count = 0;
                 }
@@ -89,28 +92,24 @@ static void imu_thread_entry(void *parameter)
     }
 }
 
-int imu_init(void)
+int openmv_init(void)
 {
     rt_err_t ret = RT_EOK;
     static char msg_pool[256];
     
     /* sbus串口的初始化配置参数 */
     struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;  
-    config.baud_rate = BAUD_RATE_921600;
-    config.data_bits = DATA_BITS_8;
-    config.parity    = PARITY_NONE;
-    config.stop_bits = STOP_BITS_1;
     
     /* 查找串口设备 */
-    serial = rt_device_find(IMU_UART);
+    serial = rt_device_find(OPENMV_UART);
     if (!serial)
     {
-        rt_kprintf("find %s failed!\n", IMU_UART);
+        rt_kprintf("find %s failed!\n", OPENMV_UART);
         return RT_ERROR;
     }
 
     /* 初始化消息队列 */
-    rt_mq_init(&rx_mq, "mq_imu",
+    rt_mq_init(&rx_mq, "mq_omv",
                msg_pool,                 /* 存放消息的缓冲区 */
                sizeof(struct rx_msg),    /* 一条消息的最大长度 */
                sizeof(msg_pool),         /* 存放消息的缓冲区大小 */
@@ -126,12 +125,12 @@ int imu_init(void)
     rt_device_set_rx_indicate(serial, imu_uart_input);
 
     /* 创建 serial 线程 */
-    rt_thread_t thread = rt_thread_create("imu", 
-                                        imu_thread_entry, 
+    rt_thread_t thread = rt_thread_create("openmv", 
+                                        openmv_thread_entry, 
                                         RT_NULL, 
-                                        IMU_THREAD_STACK_SIZE, 
-                                        IMU_THREAD_PRIORITY, 
-										IMU_THREAD_TIMESLICE);
+                                        OPENMV_THREAD_STACK_SIZE, 
+                                        OPENMV_THREAD_PRIORITY, 
+										OPENMV_THREAD_TIMESLICE);
     
     /* 创建成功则启动线程 */
     if (thread != RT_NULL)
@@ -147,23 +146,23 @@ int imu_init(void)
 }
 
 /* 导出命令 or 自动初始化 */
-INIT_APP_EXPORT(imu_init);
+INIT_APP_EXPORT(openmv_init);
 
 /*--------------------------  调试输出线程  ---------------------------*/
 
-static void imu_debug_thread_entry(void *parameter)
+static void openmv_debug_thread_entry(void *parameter)
 {
     while (1)
     {
         rt_kprintf("\x1b[2J\x1b[H");
-        rt_kprintf("%d \n", imu.roll);
+        rt_kprintf("u:%3d v:%3d\n", pix.u, pix.v);
         rt_thread_mdelay(50);
     }
 }
 
-static int imu_output(int argc, char *argv[])
+static int openmv_output(int argc, char *argv[])
 {
-    rt_thread_t thread = rt_thread_create("imu_output", imu_debug_thread_entry, RT_NULL, 1024, 25, 10);
+    rt_thread_t thread = rt_thread_create("omv_out", openmv_debug_thread_entry, RT_NULL, 1024, 25, 10);
     /* 创建成功则启动线程 */
     if (thread != RT_NULL)
     {
@@ -173,7 +172,7 @@ static int imu_output(int argc, char *argv[])
     return 0;
 }
 /* 导出到 msh 命令列表中 */
-MSH_CMD_EXPORT(imu_output, remote controller data debug output);
+MSH_CMD_EXPORT(openmv_output, openmv data output);
 
 
 

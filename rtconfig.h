@@ -185,7 +185,7 @@
 /* Arduino libraries */
 
 
-/* Projects */
+/* Projects and Demos */
 
 
 /* Sensors */
@@ -233,6 +233,8 @@
 #define BSP_USING_UART6
 #define BSP_USING_UART7
 #define BSP_UART7_RX_USING_DMA
+#define BSP_USING_UART8
+#define BSP_UART8_RX_USING_DMA
 #define BSP_USING_UART1
 #define BSP_UART1_RX_USING_DMA
 #define BSP_USING_CAN

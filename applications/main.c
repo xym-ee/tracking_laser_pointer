@@ -23,12 +23,12 @@
 
 int main(void)
 {
-	while (1)
-	{
-		
-		
-		rt_thread_mdelay(10);
-	}
+//	while (1)
+//	{
+//		
+//		
+//		rt_thread_mdelay(10);
+//	}
 	
 
 	
