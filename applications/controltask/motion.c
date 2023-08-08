@@ -3,6 +3,8 @@
 #include "iotask/sbus.h"
 #include "iotask/motor_can.h"
 #include "iotask/openmv.h"
+#include "iotask/buzzer.h"
+
 
 #include "controltask/pid.h"
 
@@ -25,12 +27,34 @@ static void motion_thread_entry(void *parameter)
 	
     while (1)
     {
-        /* 自动控制 */
-        motor.yaw.control.speed = controller_output(&yaw_controller, 90, pix.u);
-        motor.pit.control.speed = -controller_output(&pit_controller, 90, pix.v);        
+        /* 未出现目标点 */
+        if (pix.u == 0xFF && pix.v == 0xFF)
+        {
+            
         
         
+        }
         
+        
+        /* 出现了目标点 */
+        else
+        {
+            /* 自动控制 */
+            /* 这里的数字时偏转角和俯仰角的目标值，为像素坐标 */
+            motor.yaw.control.speed = controller_output(&yaw_controller, 180, pix.u);
+            motor.pit.control.speed = -controller_output(&pit_controller, 180, pix.v);
+
+            /* 偏差小于给定值 */
+            if ( (yaw_controller.err < 10) && (yaw_controller.err > -10) && (pit_controller.err<10) && (pit_controller.err>1))
+            {
+                buzzer_flag = 1;           
+            }
+            else
+            {
+                buzzer_flag = 0;
+            }
+        }
+                
 		/* 遥控器控制 */
 //		motor.yaw.control.speed = (sbus.rh - SBUS_CH_OFFSET)*10000/SBUS_CH_LENGTH;
 //		motor.pit.control.speed = (sbus.rv - SBUS_CH_OFFSET)*10000/SBUS_CH_LENGTH;
