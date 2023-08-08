@@ -100,6 +100,7 @@ static void can_tx_thread_entry(void *parameter)
 //		{
 //			rt_kprintf("can dev write data failed in left!\n");
 //		}
+        RT_UNUSED(size);
 		
 		rt_thread_mdelay(5);
 		

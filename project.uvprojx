@@ -395,11 +395,6 @@
               <FilePath>..\2023-wheel-leg-robot\applications\led.c</FilePath>
             </File>
             <File>
-              <FileName>status.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\2023-wheel-leg-robot\applications\status.c</FilePath>
-            </File>
-            <File>
               <FileName>motion.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\2023-wheel-leg-robot\applications\controltask\motion.c</FilePath>

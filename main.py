@@ -13,8 +13,8 @@ clock = time.clock()                # Create a clock object to track the FPS.
 led     = pyb.LED(3)
 uart    = pyb.UART(3,115200)
 
-# red_point = (24, 100, 14, 127, -128, 127)
-red_point = (30, 100, 20, 127, -128, 127)
+red_point = (24, 100, 14, 127, -128, 127)
+# red_point = (30, 100, 20, 127, -128, 127)
 
 while(True):
     clock.tick()                    # Update the FPS clock.
@@ -44,5 +44,9 @@ while(True):
             # -----------------------------------------------------------------调试用
     else:
         led.off()
+
+        # 串口输出
+        uart_output = "%c%c%c%c%c" % (0x55, 0x55, 90, 90, 0xAA)
+        uart.write(uart_output)
 
     #print(clock.fps()) # 注意: 你的OpenMV连到电脑后帧率大概为原来的一半
