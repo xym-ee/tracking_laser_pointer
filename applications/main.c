@@ -13,14 +13,6 @@
 #include <board.h>
 
 
-
-#include "iotask/motor_can.h"
-
-#include "controltask/lpf.h"
-
-#include "iotask/imu.h"
-
-
 int main(void)
 {
 

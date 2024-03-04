@@ -1,17 +1,5 @@
 #include "iotask/buzzer.h"
 
-/*
- * 程序清单：这是一个 PWM 设备使用例程
- * 例程导出了 pwm_led_sample 命令到控制终端
- * 命令调用格式：pwm_led_sample
- * 程序功能：通过 PWM 设备控制 LED 灯的亮度，可以看到LED不停的由暗变到亮，然后又从亮变到暗。
-*/
-
-#include <rtthread.h>
-#include <rtdevice.h>
-
-
-
 rt_uint8_t buzzer_flag = 0;
 
 
@@ -26,9 +14,6 @@ struct rt_device_pwm *pwm_dev;      /* PWM设备句柄 */
 
 static void buzzer_thread_entry(void *parameter)
 {
-    rt_uint32_t period, pulse, dir;
-
-
     while (1)
     {
         if(buzzer_flag == 1)
@@ -48,8 +33,6 @@ static void buzzer_thread_entry(void *parameter)
 
 int buzzer_init(void)
 {
-    rt_err_t res;
-
     pwm_dev = (struct rt_device_pwm *)rt_device_find(PWM_DEV_NAME);
     if (pwm_dev == RT_NULL)
     {

@@ -32,7 +32,6 @@ static void motion_thread_entry(void *parameter)
         {
             
         
-        
         }
         
         
