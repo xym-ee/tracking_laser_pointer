@@ -10,9 +10,22 @@
 
 激光点跟踪演示：
 
-https://github.com/xym-ee/pts_track/assets/43857209/7a6a910a-33cb-4732-93d5-8d30ed2ab114
+https://private-user-images.githubusercontent.com/43857209/309697146-7a6a910a-33cb-4732-93d5-8d30ed2ab114.mp4
 
 OPenMV IDE 中摄像头画面：
 
-https://github.com/xym-ee/pts_track/assets/43857209/0a0971ed-184f-4b1b-b17b-1294dc0f3022
+https://private-user-images.githubusercontent.com/43857209/309697247-0a0971ed-184f-4b1b-b17b-1294dc0f3022.mp4
+
+四边形路径控制仿真
+
+https://private-user-images.githubusercontent.com/43857209/355760123-70469939-8fe9-499d-ad8a-d8bf6560e161.mp4
+
+跟踪仿真
+
+https://private-user-images.githubusercontent.com/43857209/355760949-9cccd4ab-d669-4864-bd09-f536ac10df44.mp4
+
+https://private-user-images.githubusercontent.com/43857209/355760996-677a791c-2bee-4659-bc9d-397c098c9e02.mp4
+
+
+
 
